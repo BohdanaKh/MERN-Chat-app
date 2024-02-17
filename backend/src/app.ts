@@ -1,23 +1,41 @@
+import "./configs/passport-config";
+
+import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
-import express from "express";
-import {authRouter} from "./routes/auth.router";
-import {userRouter} from "./routes/user.router";
-import {connectToDB} from "./db/connectToMongoDB";
+import express, { NextFunction, Request, Response } from "express";
+import passport from "passport";
+
+import { connectToDB } from "./db/connectToMongoDB";
+import { ApiError } from "./errors/api.error";
+import { authRouter } from "./routes/auth.router";
+import { messageRouter } from "./routes/message.router";
+import {userRouter} from "./routes/users.router";
+
+const app = express();
+const PORT = process.env.PORT || 5042;
 
 dotenv.config();
 
-const app = express();
-
-app.use(express.json());
+app.use(express.json()); // to parse the incoming requests with JSON payloads (from req.body)
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser("secret"));
 
-const PORT = process.env.PORT || 5042;
+app.use(passport.initialize());
 
+app.use("/api/auth", authRouter);
+app.use("/api/messages", messageRouter);
+app.use("/api/users", userRouter);
 
-app.use('/api/auth', authRouter );
-app.use('/api/user', userRouter );
+app.use((err: ApiError, req: Request, res: Response, next: NextFunction) => {
+  const status = err.status || 500;
+
+  return res.status(status).json({
+    message: err.message,
+    status: err.status,
+  });
+});
 
 app.listen(PORT, () => {
-    connectToDB();
-    console.log(`Server is running on port ${PORT}`)
+  connectToDB();
+  console.log(`Server is running on port ${PORT}`);
 });
