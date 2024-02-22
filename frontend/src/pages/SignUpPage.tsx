@@ -1,32 +1,51 @@
-import {FC} from 'react';
+import React, {FC, useState} from 'react';
 import {GenderCheckbox} from "./GenderCheckbox.tsx";
+import {Link} from "react-router-dom";
+import {EGender} from "../interfaces/user.interface.ts";
+import  useSignUp  from "../hooks/useSignUp.ts";
 
-interface IProps {
 
-}
+const SignUpPage: FC = () => {
+	const [inputs, setInputs] = useState({
+		fullName: '',
+		username: '',
+		password: '',
+		confirmPassword: '',
+		gender: ''
+	});
 
-const SignUpPage: FC<IProps> = () => {
+	const { loading, signup } = useSignUp();
+	const handleInputGenderCheck = (gender: EGender) => {
+		setInputs({...inputs, gender})
+	}
+	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+		e.preventDefault();
+await signup(inputs);
+	}
 
-    return (
+    
+	return (
 		<div className='flex flex-col items-center justify-center min-w-96 mx-auto'>
 			<div className='w-full p-6 rounded-lg shadow-md bg-gray-400 bg-clip-padding backdrop-filter backdrop-blur-lg bg-opacity-0'>
 				<h1 className='text-3xl font-semibold text-center text-gray-300'>
 					Sign Up <span className='text-blue-500'> ChatApp</span>
 				</h1>
 
-				<form>
+				<form onSubmit={handleSubmit}>
 					<div>
 						<label className='label p-2'>
 							<span className='text-base label-text'>Full Name</span>
 						</label>
-						<input type='text' placeholder='John Doe' className='w-full input input-bordered  h-10' />
+						<input type='text' placeholder='John Doe' className='w-full input input-bordered  h-10'
+						value={inputs?.fullName} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setInputs({...inputs, fullName: e.target.value})}
+						/>
 					</div>
 
 					<div>
 						<label className='label p-2 '>
 							<span className='text-base label-text'>Username</span>
 						</label>
-						<input type='text' placeholder='johndoe' className='w-full input input-bordered h-10' />
+						<input type='text' placeholder='johndoe' className='w-full input input-bordered h-10' value={inputs?.username} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setInputs({...inputs, username: e.target.value})}/>
 					</div>
 
 					<div>
@@ -37,6 +56,7 @@ const SignUpPage: FC<IProps> = () => {
 							type='password'
 							placeholder='Enter Password'
 							className='w-full input input-bordered h-10'
+							value={inputs.password} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setInputs({...inputs, password: e.target.value})}
 						/>
 					</div>
 
@@ -48,17 +68,21 @@ const SignUpPage: FC<IProps> = () => {
 							type='password'
 							placeholder='Confirm Password'
 							className='w-full input input-bordered h-10'
+							value={inputs?.confirmPassword} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setInputs({...inputs, confirmPassword: e.target.value})}
 						/>
 					</div>
+					{/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
+{/*// @ts-expect-error*/}
+					<GenderCheckbox onCheckboxChange={handleInputGenderCheck} selectedGender={inputs.gender} />
 
-					<GenderCheckbox />
-
-					<a className='text-sm hover:underline hover:text-blue-600 mt-2 inline-block' href='#'>
+					<Link to={'/login'} className='text-sm hover:underline hover:text-blue-600 mt-2 inline-block'>
 						Already have an account?
-					</a>
+					</Link>
 
 					<div>
-						<button className='btn btn-block btn-sm mt-2 border border-slate-700'>Sign Up</button>
+						<button className='btn btn-block btn-sm mt-2 border border-slate-700' disabled={loading}>
+							{loading ? <span className='loading loading-spinner'></span> : "Sign Up"}
+						</button>
 					</div>
 				</form>
 			</div>

@@ -1,7 +1,8 @@
 import { NextFunction, Request, Response } from "express";
 import passport from "passport";
-import {ApiError} from "../errors/api.error";
-import {JWTPayload} from "../types/user.type";
+
+import { ApiError } from "../errors/api.error";
+import { JWTPayload } from "../types/user.type";
 
 export const auth = async (req: Request, res: Response, next: NextFunction) => {
   passport.authenticate("jwt", (err: ApiError, user: JWTPayload) => {

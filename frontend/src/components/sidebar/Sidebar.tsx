@@ -2,11 +2,9 @@ import {FC} from 'react';
 import {SearchInput} from "./SearchInput.tsx";
 import {Conversations} from "./conversations/Conversations.tsx";
 import {LogoutButton} from "./LogoutButton.tsx";
-interface IProps {
 
-}
 
-const Sidebar: FC<IProps> = () => {
+const Sidebar: FC = () => {
 
     return (
         <div className='border-r border-slate-500 p-4 flex flex-col'>

@@ -2,11 +2,7 @@ import {FC} from 'react';
 import { IoSearchSharp } from "react-icons/io5";
 
 
-interface IProps {
-
-}
-
-const SearchInput: FC<IProps> = () => {
+const SearchInput: FC = () => {
 
     return (
         <form className='flex items-center gap-2'>
