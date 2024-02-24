@@ -19,8 +19,9 @@ const useGetConversations = () => {
               }
               setConversations(data)
             } catch (e) {
+          
                 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-               // @ts-expect-error
+                // @ts-expect-error
                 toast.error(e.message)
             }finally {
                 setLoading(false)

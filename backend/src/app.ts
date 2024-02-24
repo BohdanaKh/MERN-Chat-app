@@ -9,9 +9,10 @@ import { connectToDB } from "./db/connectToMongoDB";
 import { ApiError } from "./errors/api.error";
 import { authRouter } from "./routes/auth.router";
 import { messageRouter } from "./routes/message.router";
-import {userRouter} from "./routes/users.router";
+import { userRouter } from "./routes/users.router";
+import { app, server } from "./socket/socket";
 
-const app = express();
+// const app = express();
 const PORT = process.env.PORT || 5042;
 
 dotenv.config();
@@ -35,7 +36,7 @@ app.use((err: ApiError, req: Request, res: Response, next: NextFunction) => {
   });
 });
 
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   connectToDB();
   console.log(`Server is running on port ${PORT}`);
 });

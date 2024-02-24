@@ -2,11 +2,13 @@ import {FC, useEffect, useRef} from 'react';
 import useGetMessages from "../../hooks/useGetMessages.ts";
 import {MessageSkeleton} from "../skeletons/MessageSkeleton.tsx";
 import {Message} from "./Message.tsx";
+import useListenMessages from "../../hooks/useListenMessages.ts";
 
 
 const Messages: FC = () => {
 const {messages, loading} = useGetMessages();
 const lastMessageRef:  React.MutableRefObject<HTMLDivElement> = useRef();
+useListenMessages();
 
     useEffect(() => {
         setTimeout(() => {

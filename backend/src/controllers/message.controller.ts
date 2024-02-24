@@ -3,6 +3,7 @@ import { NextFunction, Request, Response } from "express";
 import { ApiError } from "../errors/api.error";
 import Conversation from "../models/conversation.model";
 import Message from "../models/message.model";
+import { getReceiverSocketId, io } from "../socket/socket";
 import { JWTPayload } from "../types/user.type";
 
 export const sendMessage = async (
@@ -14,7 +15,7 @@ export const sendMessage = async (
     const { id: receiverId } = req.params;
     const { message } = req.body;
     const userPayload = req.user as JWTPayload;
-    const senderId: string = userPayload.userId;
+    const senderId = userPayload.userId;
 
     let conversation = await Conversation.findOne({
       participants: { $all: [senderId, receiverId] },
@@ -37,6 +38,12 @@ export const sendMessage = async (
     // await newMessage.save();
 
     await Promise.all([await conversation.save(), await newMessage.save()]); // will run in parallel
+
+    const receiverSocketId = getReceiverSocketId(receiverId);
+    if (receiverSocketId) {
+      // io.to(<socket_id>).emit() used to send events to specific client
+      io.to(receiverSocketId).emit("newMessage", newMessage);
+    }
 
     res.status(201).json(newMessage);
   } catch (e) {

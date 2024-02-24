@@ -4,5 +4,6 @@ _id: string,
     senderId: string,
     receiverId: string,
     createdAt: string,
+    shouldShake: boolean,
 
 }

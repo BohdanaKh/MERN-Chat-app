@@ -1,5 +1,7 @@
+import { Types } from "mongoose";
+
 export interface IMessage {
-  senderId: string;
-  receiverId: string;
+  senderId: Types.ObjectId | string;
+  receiverId: Types.ObjectId | string;
   message: string;
 }
